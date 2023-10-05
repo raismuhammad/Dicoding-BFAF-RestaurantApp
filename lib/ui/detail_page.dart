@@ -131,6 +131,43 @@ class DetailPage extends StatelessWidget {
                                     },
                                   ),
                                 ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 18.0),
+                                  child: Text(
+                                    "Customer Review :",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 100,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemCount:
+                                    restaurantDetail.customerReviews.length,
+                                    itemBuilder: (context, index) {
+                                      var customerReview =
+                                      restaurantDetail.customerReviews[index];
+                                      return Card(
+                                        child: Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(18.0),
+                                            child:
+                                            Center(child: Column(
+                                              children: [
+                                                Text(customerReview.name),
+                                                Text(customerReview.review),
+                                              ],
+                                            ),),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
                               ],
                             ),
                           ),
