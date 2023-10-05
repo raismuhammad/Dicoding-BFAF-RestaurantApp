@@ -52,7 +52,8 @@ class DetailPage extends StatelessWidget {
                                 Text(
                                   restaurantDetail.name,
                                   style: TextStyle(
-                                      fontSize: 22, fontWeight: FontWeight.bold),
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 Text(restaurantDetail.city),
                                 Padding(
@@ -67,11 +68,69 @@ class DetailPage extends StatelessWidget {
                                   ),
                                 ),
                                 Padding(
-                                    padding: EdgeInsets.only(top: 18),
-                                    child: Text(
-                                      restaurantDetail.description,
-                                      textAlign: TextAlign.justify,
-                                    )),
+                                  padding: EdgeInsets.only(top: 18),
+                                  child: Text(
+                                    restaurantDetail.description,
+                                    textAlign: TextAlign.justify,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 18.0),
+                                  child: Text("Menu Makanan", style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),),
+                                ),
+                                SizedBox(
+                                  height: 50,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemCount:
+                                        restaurantDetail.menus.foods.length,
+                                    itemBuilder: (context, index) {
+                                      var foods =
+                                          restaurantDetail.menus.foods[index];
+                                      return Card(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child:
+                                              Center(child: Text(foods.name)),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 18.0),
+                                  child: Text(
+                                    "Menu Minuman :",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 50,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemCount:
+                                        restaurantDetail.menus.drinks.length,
+                                    itemBuilder: (context, index) {
+                                      var drinks =
+                                          restaurantDetail.menus.drinks[index];
+                                      return Card(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child:
+                                              Center(child: Text(drinks.name)),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
                               ],
                             ),
                           ),

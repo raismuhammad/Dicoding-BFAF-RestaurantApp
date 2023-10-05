@@ -15,7 +15,112 @@ class SearchRestaurantPage extends StatefulWidget {
 }
 
 class _SearchRestaurantPageState extends State<SearchRestaurantPage> {
-  TextEditingController _editingController = TextEditingController();
+  String query = "";
+  late TextEditingController _editingController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _editingController = TextEditingController()
+      ..addListener(() {
+        setState(() {});
+      });
+    super.initState();
+  }
+
+  TextEditingController controller = TextEditingController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _editingController.dispose();
+    super.dispose();
+  }
+
+  Widget _seachState(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(18.0),
+      child: Consumer<SearchProvider>(
+        builder: (context, state, _) {
+          return TextField(
+            // controller: controller,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: const BorderSide(
+                  width: 1,
+                  color: Colors.black,
+                ),
+              ),
+              prefixIcon: const Icon(
+                Icons.search,
+                color: Color(0xFFc80064),
+              ),
+              filled: true,
+              hintStyle: const TextStyle(color: Colors.grey),
+              hintText: 'Search',
+              fillColor: Colors.white,
+            ),
+            onChanged: (text) {
+              setState(
+                () {
+                  state.fetchAllSearch(text);
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildList(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.all(18.0),
+        child: Consumer<SearchProvider>(
+          builder: (context, state, _) {
+            if (state.state == ResultState.loading) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state.state == ResultState.hasData) {
+              if (state.result.founded != 0) {
+                return ListView.builder(
+                    itemCount: state.result.founded,
+                    itemBuilder: (BuildContext context, index) {
+                      var restaurant = state.result.restaurants[index];
+                      return CardSearch(restaurant: restaurant);
+                    });
+              } else {
+                return const Material(
+                  child: Text('No Data'),
+                );
+              }
+            } else if (state.state == ResultState.noData) {
+              return Center(
+                child: Material(
+                  child: Text(state.message),
+                ),
+              );
+            } else if (state.state == ResultState.error) {
+              return Center(
+                child: Material(
+                  child: Text('Check your connection'),
+                ),
+              );
+            } else {
+              return const Center(
+                child: Material(
+                  child: SizedBox(),
+                ),
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +131,7 @@ class _SearchRestaurantPageState extends State<SearchRestaurantPage> {
           color: Colors.white,
         ),
         title: Text(
-          'Search',
+          "Search",
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -37,94 +142,18 @@ class _SearchRestaurantPageState extends State<SearchRestaurantPage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(14),
           child: Column(
+            mainAxisSize: MainAxisSize.max,
             children: [
-              TextField(
-                controller: _editingController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(
-                      width: 1,
-                      color: Colors.black,
-                    ),
-                  ),
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: Color(0xFFc80064),
-                  ),
-                  filled: true,
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  hintText: 'Search',
-                  fillColor: Colors.white,
-                ),
+              _seachState(context),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 18.0),
+                child: SizedBox(height: MediaQuery.of(context).size.height, child: _buildList(context)),
               ),
-              const SizedBox(
-                height: 16,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height - 140,
-                child: _editingController.text.isNotEmpty
-                    ? ChangeNotifierProvider<SearchProvider>(
-                        create: (context) => SearchProvider(
-                              apiService: ApiService(),
-                              key: _editingController.text,
-                            ),
-                        child: Consumer<SearchProvider>(
-                          builder: (context, state, _) {
-                            if (state.state == ResultState.loading) {
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else if (state.state == ResultState.hasData) {
-                              if (state.result.founded != 0) {
-                                return ListView.builder(
-                                    itemCount: state.result.founded,
-                                    itemBuilder: (BuildContext context, index) {
-                                      var restaurant =
-                                          state.result.restaurants[index];
-                                      return CardSearch(restaurant: restaurant);
-                                    });
-                              } else {
-                                return const Material(
-                                  child: Text('No Data'),
-                                );
-                              }
-                            } else if (state.state == ResultState.noData) {
-                              return Center(
-                                child: Material(
-                                  child: Text(state.message),
-                                ),
-                              );
-                            } else if (state.state == ResultState.error) {
-                              return Center(
-                                child: Material(
-                                  child: Text('Check your connection'),
-                                ),
-                              );
-                            } else {
-                              return const Center(
-                                child: Material(
-                                  child: SizedBox(),
-                                ),
-                              );
-                            }
-                          },
-                        ))
-                    : const SizedBox(),
-              )
             ],
           ),
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    _editingController.dispose();
-    super.dispose();
   }
 }
